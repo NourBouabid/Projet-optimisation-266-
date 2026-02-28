@@ -1,9 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.optimize import least_squares
 
 #fonction à minimiser
 def F(X,Y,xc,yc,r):
-    return sum([(((X[i]-xc)**2 + (Y[i]-yc)**2)**0.5 - r)**2 for i in range(len(X))])
+    return sum([(((x-xc)**2 + (y-yc)**2)**0.5 - r)**2 for i in range(len(X))])
 
 #minimisation sans contrainte
 def methode2(x, y, method='lm',max_nfev=1000):
@@ -48,3 +49,43 @@ def methode3(x,y, method='lm',max_nfev=1000):
     result = least_squares(residus, x0=(xc0, yc0), method=method, max_nfev=max_nfev)  #max nombre d'itération1000
 
     return result.x
+
+#création d'un jeu de données de test
+
+r=3
+n=100
+theta = np.random.uniform(0, 2*np.pi, 100)
+x = r * np.cos(theta)
+y = r * np.sin(theta)
+sigma=0.5
+bruit = np.random.normal(loc=0, scale=np.sqrt(sigma), size=(n, 2))
+x_bruite = x + bruit[:,0]
+y_bruite = y + bruit[:,1]
+
+#visualisation methode 2
+
+'''xc, yc, r =methode2(x_bruite,y_bruite)
+theta = np.linspace(0, 2*np.pi, 300)
+x_cercle = xc + r*np.cos(theta)
+y_cercle = yc + r*np.sin(theta)
+plt.scatter(x_cercle, y_cercle, label="cercle approché")
+plt.scatter(x_bruite, y_bruite, alpha=0.6, label="points bruités")
+
+plt.axis("equal")
+plt.title("ajustement cercle methode 2")
+plt.legend()
+plt.show()
+'''
+#visulaisation methode 3
+xc, yc =methode3(x_bruite,y_bruite)
+r=np.sqrt((x_bruite[-1]-xc)**2 + (y_bruite[-1]-yc)**2)
+theta = np.linspace(0, 2*np.pi, 300)
+x_cercle = xc + r*np.cos(theta)
+y_cercle = yc + r*np.sin(theta)
+plt.scatter(x_cercle, y_cercle, label="cercle approché")
+plt.scatter(x_bruite, y_bruite, alpha=0.6, label="points bruités")
+
+plt.axis("equal")
+plt.title("ajustement cercle methode 3")
+plt.legend()
+plt.show()
