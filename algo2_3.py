@@ -12,6 +12,7 @@ def methode2(x, y, method='lm',max_nfev=1000):
     Datas (x,y)
     par défaut methode Levenberg-Marquardt avec régularisation Ridge
     '''
+    #definition de la fonction des residus
     def residus(theta):
         xc, yc, r = theta
         return np.sqrt((x-xc)**2 + (y-yc)**2) - r
@@ -28,10 +29,15 @@ def methode2(x, y, method='lm',max_nfev=1000):
 
 #minimisation avec contrainte
 def methode3(x,y, method='lm',max_nfev=1000):
+    '''
+    minimise F avec contrainte
+    Datas (x,y)
+    par défaut methode Levenberg-Marquardt avec régularisation Ridge
+    '''
 
     #definition avec contrainte
     def residus(theta):
-        xc, yc = theta
+        xc, yc = theta #2 paramêtres car r dépend de xc et yc
         r = np.mean(np.sqrt((x[-1]-xc)**2 + (y[-1]-yc)**2))
         return np.sqrt((x-xc)**2 + (y-yc)**2) - r
     
