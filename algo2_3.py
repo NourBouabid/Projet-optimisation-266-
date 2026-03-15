@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 from scipy.optimize import least_squares
 
 #fonction à minimiser
@@ -24,7 +25,8 @@ def methode2(x, y, method='lm',max_nfev=1000):
     r0  = np.mean(np.sqrt((x-xc0)**2 + (y-yc0)**2))
 
     result = least_squares(residus, x0=(xc0, yc0, r0), method=method, max_nfev=max_nfev)  #max nombre d'itération1000
-
+    #voir vitesse de convergence et critère d'arret
+    
     return result.x
 #LM est une version améliorée de la methode de Gausse-Newton, étudier la convergence de la suite des paramêtres
 
@@ -45,10 +47,13 @@ def methode3(x,y, method='lm',max_nfev=1000):
     # initialisation
     xc0 = np.mean(x)
     yc0 = np.mean(y)
+    r=np.sqrt((x_bruite[-1]-xc0)**2 + (y_bruite[-1]-yc0)**2)
 
-    result = least_squares(residus, x0=(xc0, yc0), method=method, max_nfev=max_nfev)  #max nombre d'itération1000
+    result = least_squares(residus, x0=(xc0, yc0,r), method=method, max_nfev=max_nfev)  #max nombre d'itération1000
 
     return result.x
+
+random.seed()
 
 #création d'un jeu de données de test
 
@@ -64,7 +69,7 @@ y_bruite = y + bruit[:,1]
 
 #visualisation methode 2
 
-'''xc, yc, r =methode2(x_bruite,y_bruite)
+xc, yc, r =methode2(x_bruite,y_bruite)
 theta = np.linspace(0, 2*np.pi, 300)
 x_cercle = xc + r*np.cos(theta)
 y_cercle = yc + r*np.sin(theta)
@@ -75,7 +80,7 @@ plt.axis("equal")
 plt.title("ajustement cercle methode 2")
 plt.legend()
 plt.show()
-'''
+
 #visulaisation methode 3
 xc, yc =methode3(x_bruite,y_bruite)
 r=np.sqrt((x_bruite[-1]-xc)**2 + (y_bruite[-1]-yc)**2)
